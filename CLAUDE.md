@@ -94,6 +94,29 @@ The application integrates with YAMCP through:
 - No external network access required
 - Configuration files accessed securely through YAMCP integration
 
+## Recent Updates (v1.0.9)
+
+### UI Design Changes
+- **Borderless Design**: Removed borders from all Card components for a cleaner, modern look
+- **Simplified Layout**: Removed page headers, moved action buttons to card headers for better space utilization
+- **Enhanced Visual Hierarchy**: Cards now use subtle backgrounds instead of borders
+
+### Server Status Fix
+- **Removed Server Status**: Completely removed the misleading server status functionality that showed all servers as "Stopped"
+- **Simplified Servers Table**: Now shows Name, Namespace, Type, Configuration, and Actions (no status column)
+- **Cleaner Data Model**: Removed status field from both frontend and backend server data structures
+
+### Logs Page Enhancements
+- **Workspace Grouping**: Logs are grouped by workspace when viewing all workspaces
+- **Advanced Filtering**: Added dropdowns to filter by workspace and log level (error, warning, info, debug)
+- **Smart Display Logic**: Shows grouped view for all workspaces, flat list for specific workspace selection
+- **Better Organization**: Log entries show workspace headers with entry counts
+
+### Version Management
+- **Current Version**: 1.0.9 (published to npm)
+- **Breaking Changes**: None - all changes are enhancements and fixes
+- **Backward Compatibility**: Maintained for existing YAMCP installations
+
 ## Code Style Notes
 
 - Do not import React unless explicitly using React-specific features (JSX transform handles JSX)
@@ -101,3 +124,5 @@ The application integrates with YAMCP through:
 - Follow Tailwind CSS utility-first approach
 - Use Radix UI primitives for accessible components
 - Maintain consistent file naming and structure conventions
+- Cards use `bg-card` background without borders for clean design
+- Log items use `bg-muted/50` for subtle visual separation
