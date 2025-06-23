@@ -171,7 +171,11 @@ export function Logs() {
     }
     
     if (selectedLevel !== "all") {
-      filtered = filtered.filter(log => log.level.toLowerCase() === selectedLevel.toLowerCase());
+      filtered = filtered.filter(log => {
+        const logLevel = (log.level || "").toLowerCase().trim();
+        const filterLevel = selectedLevel.toLowerCase().trim();
+        return logLevel === filterLevel;
+      });
     }
     
     return filtered;
