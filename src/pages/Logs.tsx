@@ -128,7 +128,8 @@ export function Logs() {
   };
 
   const getLevelBadge = (level: string) => {
-    switch (level) {
+    const normalizedLevel = level.toLowerCase();
+    switch (normalizedLevel) {
       case "error":
         return <Badge variant="destructive">Error</Badge>;
       case "warn":
@@ -170,7 +171,7 @@ export function Logs() {
     }
     
     if (selectedLevel !== "all") {
-      filtered = filtered.filter(log => log.level === selectedLevel);
+      filtered = filtered.filter(log => log.level.toLowerCase() === selectedLevel.toLowerCase());
     }
     
     return filtered;
