@@ -128,7 +128,7 @@ export function Logs() {
   };
 
   const getLevelBadge = (level: string) => {
-    const normalizedLevel = level.toLowerCase();
+    const normalizedLevel = level.toLowerCase().trim();
     switch (normalizedLevel) {
       case "error":
         return <Badge variant="destructive">Error</Badge>;
@@ -165,19 +165,22 @@ export function Logs() {
   // Filter logs based on workspace and level
   const getFilteredLogs = () => {
     let filtered = logs;
-    
+
     if (selectedWorkspace !== "all") {
-      filtered = filtered.filter(log => log.server === selectedWorkspace);
+      filtered = filtered.filter((log) => log.server === selectedWorkspace);
     }
-    
+
     if (selectedLevel !== "all") {
-      filtered = filtered.filter(log => {
+      const filterLevel = selectedLevel.toLowerCase().trim();
+      filtered = filtered.filter((log) => {
         const logLevel = (log.level || "").toLowerCase().trim();
-        const filterLevel = selectedLevel.toLowerCase().trim();
+        if (filterLevel === "warn") {
+          return logLevel === "warn" || logLevel === "warning";
+        }
         return logLevel === filterLevel;
       });
     }
-    
+
     return filtered;
   };
 
@@ -275,9 +278,9 @@ export function Logs() {
               </Select>
             </div>
             <div className="flex items-center space-x-2">
-              <label className="text-sm text-muted-foreground">Level:</label>
+              <label htmlFor="level-select" className="text-sm text-muted-foreground">Level:</label>
               <Select value={selectedLevel} onValueChange={setSelectedLevel}>
-                <SelectTrigger className="w-32">
+                <SelectTrigger id="level-select" className="w-32">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
