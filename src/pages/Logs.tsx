@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   Card,
   CardContent,
@@ -163,7 +163,7 @@ export function Logs() {
   };
 
   // Filter logs based on workspace and level
-  const getFilteredLogs = () => {
+  const filteredLogs = useMemo(() => {
     let filtered = logs;
 
     if (selectedWorkspace !== "all") {
@@ -182,14 +182,13 @@ export function Logs() {
     }
 
     return filtered;
-  };
+  }, [logs, selectedWorkspace, selectedLevel]);
 
   // Group logs by workspace
-  const getGroupedLogs = () => {
-    const filtered = getFilteredLogs();
+  const groupedLogs = useMemo(() => {
     const grouped: Record<string, LogEntry[]> = {};
     
-    filtered.forEach(log => {
+    filteredLogs.forEach(log => {
       if (!grouped[log.server]) {
         grouped[log.server] = [];
       }
@@ -197,7 +196,7 @@ export function Logs() {
     });
     
     return grouped;
-  };
+  }, [filteredLogs]);
 
   if (loading) {
     return (
@@ -230,7 +229,7 @@ export function Logs() {
             <div>
               <CardTitle>System Logs</CardTitle>
               <CardDescription>
-                Recent server events and error messages ({getFilteredLogs().length} entries)
+                Recent server events and error messages ({filteredLogs.length} entries)
               </CardDescription>
             </div>
             <div className="flex space-x-2">
@@ -295,12 +294,12 @@ export function Logs() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="space-y-6">
-            {logs.length > 0 ? (
+          <div key={`${selectedLevel}-${selectedWorkspace}-${filteredLogs.length}`} className="space-y-6">
+            {filteredLogs.length > 0 ? (
               selectedWorkspace === "all" ? (
                 // Show grouped by workspace when "All Workspaces" is selected
-                Object.entries(getGroupedLogs()).map(([workspaceName, workspaceLogs]) => (
-                  <div key={workspaceName} className="space-y-3">
+                Object.entries(groupedLogs).map(([workspaceName, workspaceLogs]) => (
+                  <div key={`${workspaceName}-${selectedLevel}-${selectedWorkspace}`} className="space-y-3">
                     <div className="flex items-center space-x-2 border-b pb-2">
                       <h4 className="font-semibold text-lg">{workspaceName}</h4>
                       <Badge variant="outline">{workspaceLogs.length} entries</Badge>
@@ -342,7 +341,7 @@ export function Logs() {
                 ))
               ) : (
                 // Show flat list when specific workspace is selected
-                getFilteredLogs().map((log) => (
+                filteredLogs.map((log) => (
                   <div
                     key={log.id}
                     className="flex items-start space-x-4 p-4 bg-muted/50 rounded-lg"
