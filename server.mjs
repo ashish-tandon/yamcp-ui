@@ -10,9 +10,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const app = express();
-// Default port 8765, can be overridden with PORT environment variable
+// Default port 3112 for MCP ecosystem, can be overridden with PORT environment variable
 // Example: PORT=3000 npx yamcp-ui
-const PORT = process.env.PORT || 8765;
+const PORT = process.env.PORT || 3112;
 
 // Import YAMCP modules from global package
 // Helper function to safely import YAMCP modules
@@ -93,6 +93,26 @@ app.use(express.static(path.join(__dirname, "dist")));
 
 // Parse JSON bodies
 app.use(express.json());
+
+// Health check endpoint for MCP ecosystem
+app.get('/health', (req, res) => {
+    res.json({ 
+        status: 'YAMCP Web UI Server - Healthy', 
+        port: PORT,
+        service: 'yamcp-ui-mcp',
+        timestamp: new Date().toISOString() 
+    });
+});
+
+// Status endpoint
+app.get('/status', (req, res) => {
+    res.json({
+        service: 'yamcp-ui-mcp',
+        status: 'operational',
+        port: PORT,
+        version: '1.0.10'
+    });
+});
 
 // Helper function to get config paths
 function getConfigPaths() {
@@ -741,8 +761,9 @@ async function startServer() {
   await initializeYAMCP();
 
   // Try to start server with error handling
-  const server = app.listen(PORT, "localhost", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+  const server = app.listen(PORT, "0.0.0.0", () => {
+    console.log(`🚀 YAMCP Web UI Server running on http://localhost:${PORT}`);
+    console.log(`🔍 Health check available at http://localhost:${PORT}/health`);
     console.log("🔒 API access restricted to web interface only");
   });
 
